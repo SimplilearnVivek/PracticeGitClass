@@ -1,0 +1,470 @@
+Stack Overflow
+About
+Products
+For Teams
+Search…
+Home
+PUBLIC
+Questions
+Tags
+Users
+Companies
+COLLECTIVES
+Explore Collectives
+TEAMS
+Stack Overflow for Teams – Start collaborating and sharing organizational knowledge. 
+git - remote add origin vs remote set-url origin
+Asked 6 years, 5 months ago
+Modified 4 months ago
+Viewed 1.5m times
+
+Report this ad
+924
+
+I create a new repository:
+
+git init
+echo "# MESSAGE" >> README.md
+git add README.md
+git commit -m "first commit"
+Then I want to push my commit to the empty remote repository created on github so I have to set remote.
+
+What is difference between using following commands ? :
+
+git remote add origin git@github.com:User/UserRepo.git
+git remote set-url origin git@github.com:User/UserRepo.git
+At the end I perform push:
+
+git push -u origin master
+What happens when I call git remote set-url origin just after git init? Does git remote set-url origin create origin? If origin already exists after git init there is no difference between using those commands in my scenario, right?
+
+gitgithub
+Share
+Improve this question
+Follow
+edited Dec 7, 2020 at 15:55
+Neuron's user avatar
+Neuron
+5,14155 gold badges3838 silver badges5858 bronze badges
+asked Mar 16, 2017 at 9:53
+Irbis's user avatar
+Irbis
+11.5k66 gold badges3939 silver badges6767 bronze badges
+Add a comment
+11 Answers
+Sorted by:
+
+Highest score (default)
+1151
+
+below is used to add a new remote:
+
+git remote add origin git@github.com:User/UserRepo.git
+below is used to change the url of an existing remote repository:
+
+git remote set-url origin git@github.com:User/UserRepo.git
+below will push your code to the master branch of the remote repository defined with origin and -u let you point your current local branch to the remote master branch:
+
+git push -u origin master
+Documentation
+
+Share
+Improve this answer
+Follow
+edited Aug 9, 2022 at 17:07
+Salvatore's user avatar
+Salvatore
+10.8k44 gold badges3131 silver badges6969 bronze badges
+answered Mar 16, 2017 at 9:56
+Shubham Khatri's user avatar
+Shubham Khatri
+270k5555 gold badges406406 silver badges399399 bronze badges
+2
+if I clone from A to my local and then use "git remote set-url B". will it delete the repository in A? I am trying to clone a repository from AWS code commit to GitLab – 
+Josh
+ Feb 1, 2018 at 3:25
+usually when I'm forking a new repo, I make a mistake and set the origin to the upstream. End up needing to correct it using the 2nd command git remote set-url origin git@github.com:User/UserRepo.git – 
+mfaani
+ Aug 2, 2018 at 21:47 
+2
+-u let you point your current local branch to the remote master branch I don't get why I'd want to do such. I mean let's say I pulled from master, created a new featureBranch...committed my changes and then pushed my changes to origin/featureBranch and then I merged/pull that feature into my master. <— at this moment am I not done with my featureBranch? Why would I need it to point to remote master branch? Shouldn't I checkout to local/master and then pull from latest origin? – 
+mfaani
+ Aug 2, 2018 at 22:01 
+2
+The answer is very good, except the explanation of -u flag, which is, in my opinion, misleading. For explanation of -u flag, I would recommend to have a look at this thread stackoverflow.com/questions/18867824/… – 
+hoang tran
+ Oct 20, 2018 at 10:50
+and -u let you point your current local branch to the remote master branch: I don't understand this line... What did you mean point to? – 
+NeoZoom.lua
+ Apr 6, 2020 at 19:23
+Show 2 more comments
+161
+
+Below will reinitialize your local repo; also clearing remote repos (ie origin):
+
+git init
+Then below, will create 'origin' if it doesn't exist:
+
+git remote add origin [repo-url]
+Else, you can use the set-url subcommand to edit an existing remote:
+
+git remote set-url origin [repo-url]
+Also, you can check existing remotes with
+
+git remote -v
+Share
+Improve this answer
+Follow
+edited Dec 24, 2022 at 0:43
+starball's user avatar
+starball
+19.6k77 gold badges3939 silver badges223223 bronze badges
+answered Nov 9, 2017 at 6:06
+vpibano's user avatar
+vpibano
+2,41511 gold badge1313 silver badges2626 bronze badges
+2
+git remote set-url origin ... on a newly init'd repo got me the message fatal: No such remote 'origin'. git remote add origin ... worked. – 
+Robb Vandaveer
+ Aug 9, 2018 at 13:32
+@RobbVandaveer Thanks for the catch! I updated the answer for the correct use of subcommand set-url – 
+vpibano
+ Aug 14, 2018 at 4:20
+Add a comment
+82
+
+1. git remote add origin git@github.com:User/UserRepo.git
+
+This command is the second step in the command series after you initialize git into your current working repository using git init.
+This command simply means "you are adding the location of your remote repository where you wish to push/pull your files to/from !!.."
+Your remote repository could be anywhere on github, gitlab, bitbucket, etc.
+Here origin is an alias/alternate name for your remote repository so that you don't have to type the entire path for remote every time and henceforth you are declaring that you will use this name(origin) to refer to your remote. This name could be anything.
+To verify that the remote is set properly type : git remote -v
+OR git remote get-url origin
+
+2. git remote set-url origin git@github.com:User/UserRepo.git
+
+This command means that if at any stage you wish to change the location of your repository(i.e if you made a mistake while adding the remote path using the git add command) the first time, you can easily go back & "reset(update) your current remote repository path" by using the above command.
+
+3. git push -u origin master
+
+This command simply pushes your files to the remote repository.Git has a concept of something known as a "branch", so by default everything is pushed to the master branch unless explicitly specified an alternate branch.
+
+To know about the list of all branches you have in your repository type :git branch
+
+Share
+Improve this answer
+Follow
+edited Jul 30, 2021 at 9:55
+answered Mar 23, 2019 at 14:19
+Tahir77667's user avatar
+Tahir77667
+2,2801919 silver badges1616 bronze badges
+Add a comment
+74
+
+When you run git remote add origin git@github.com:User/UserRepo.git, then a new remote created named origin.
+When you run git remote set-url origin git@github.com:User/UserRepo.git,git searches for existing remote having name origin and change it's remote repository url. If git unable to find any remote having name origin, It raise an error fatal: No such remote 'origin'.
+If you are going to create a new repository then use git remote add origin git@github.com:User/UserRepo.git to add remote.
+
+Share
+Improve this answer
+Follow
+answered Mar 16, 2017 at 10:04
+Ram's user avatar
+Ram
+99177 silver badges88 bronze badges
+1
+git init doesn't add any origin. Only git repository will be initialize. If you clone any existing repository then it has a remote origin. Recommendation is use git add, after git init not set-url. – 
+Ram
+ Mar 16, 2017 at 11:58 
+@Ram It is obvious not to call set-url after git init as it not make sense. set-url is to change and add is to add new remote. – 
+Santosh
+ Jun 26, 2019 at 10:20
+Add a comment
+58
+
+To add a new remote, use the git remote add command on the terminal, in the directory your repository is stored at.
+
+The git remote set-url command changes an existing remote repository URL.
+
+So basicly, remote add is to add a new one, remote set-url is to update an existing one
+
+Share
+Improve this answer
+Follow
+answered Mar 16, 2017 at 9:56
+Murf's user avatar
+Murf
+1,6611111 silver badges1818 bronze badges
+Add a comment
+49
+
+git remote add => ADDS a new remote.
+
+git remote set-url => UPDATES existing remote.
+
+The remote name that comes after add is a new remote name that did not exist prior to that command.
+The remote name that comes after set-url should already exist as a remote name to your repository.
+git remote add myupstream someurl => myupstream remote name did not exist now creating it with this command.
+
+git remote set-url upstream someurl => upstream remote name already exist i'm just changing it's url.
+
+git remote add myupstream https://github.com/nodejs/node => **ADD** If you don't already have upstream
+git remote set-url upstream https://github.com/nodejs/node # => **UPDATE** url for upstream
+Share
+Improve this answer
+Follow
+answered Jun 12, 2018 at 7:23
+Tomer Ben David's user avatar
+Tomer Ben David
+8,26811 gold badge4343 silver badges2424 bronze badges
+Add a comment
+47
+
+This is very simple If you have already set a remote origin url then you use set-url command to change that, otherwise simply use add command
+
+If you don't have a git repo already initiate one with git init
+
+git remote -v Check if any remote already exists
+If Yes then use git remote set-url origin git@github.com:User/UserRepo.git to change the origin
+If No then use git remote add origin git@github.com:User/UserRepo.git to set new origin for your repo.
+and finally use git push -u origin master to push your code to remote and add upstream (tracking) reference to your remote branch.
+NOTE: If you use -u flag, its for upstream, it enables you to use simply git pull instead of git pull origin <branch-name> in upcoming operations.
+
+Share
+Improve this answer
+Follow
+edited Oct 29, 2021 at 15:23
+Nimantha's user avatar
+Nimantha
+6,47766 gold badges2828 silver badges6969 bronze badges
+answered Jan 4, 2021 at 4:52
+Vivek Maru's user avatar
+Vivek Maru
+8,33711 gold badge2424 silver badges3434 bronze badges
+Add a comment
+25
+
+Try this:
+
+git init  
+git remote add origin your_repo.git  
+git remote -v  
+git status  
+Share
+Improve this answer
+Follow
+edited Mar 4, 2019 at 13:14
+סטנלי גרונן's user avatar
+סטנלי גרונן
+2,9172323 gold badges4646 silver badges6868 bronze badges
+answered Mar 4, 2019 at 12:18
+Tal Hakmon's user avatar
+Tal Hakmon
+47555 silver badges66 bronze badges
+Add a comment
+21
+
+You can not call remote set-url origin just after git init, Because the git remote set-url command will not create origin, but it changes an existing remote repository URL.
+
+so the command git remote set-url will only work if you've either cloned the repository or manually added a remote called origin.
+
+you can check remote with command git remote -v it will show remote url after name, or if this command gives error like fatal: Not a git repository (or any of the parent directories): .git then the repository not exists, so you have to add origin with command git remote add
+
+1. git remote add
+
+This command is used to add a new remote, you can use this command on the terminal, in the directory of your repository.
+
+The git remote add command takes two arguments:
+
+A remote name, for example, origin
+A remote URL, for example, https://github.com/user/repo.git
+For example:
+
+git remote add origin https://github.com/user/repo.git
+2.git remote set-url
+
+The git remote set-url command changes an existing remote repository URL.
+
+The git remote set-url command takes two arguments:
+
+An existing remote name. For example, origin or upstream are two common choices.
+A new URL for the remote
+For example you can change your remote's URL from SSH to HTTPS with the git remote set-url command.
+
+git remote set-url origin https://github.com/USERNAME/REPOSITORY.git
+you can verify that the remote URL has changed, with command git remote -v.
+
+note: "origin" is a convention not part of the command. "origin" is the local name of the remote repository. you can use any name instead of "origin".
+
+For example:
+
+git remote add myorigin git@github.com:user/repo.git
+git remote set-url myorigin https://github.com/user/repo.git
+References from github: remote add, remote set-url
+
+Share
+Improve this answer
+Follow
+edited Jun 20, 2020 at 9:12
+Community's user avatar
+CommunityBot
+111 silver badge
+answered Oct 4, 2018 at 7:53
+Haritsinh Gohil's user avatar
+Haritsinh Gohil
+5,8184848 silver badges5050 bronze badges
+Add a comment
+9
+
+if you have existing project and you would like to add remote repository url then you need to do following command
+
+git init
+if you would like to add readme.md file then you can create it and add it using below command.
+
+git add README.md
+make your first commit using below command
+
+git commit -m "first commit"
+Now you completed all local repository process, now how you add remote repository url ? check below command this is for ssh url, you can change it for https.
+
+git remote add origin git@github.com:user-name/repository-name.git
+How you push your first commit see below command :
+
+git push -u origin master
+Share
+Improve this answer
+Follow
+answered Apr 24, 2020 at 5:58
+Sumit Jaiswal's user avatar
+Sumit Jaiswal
+78788 silver badges1111 bronze badges
+Add a comment
+2
+
+We use git remote add origin git@github.com:User/UserRepo.git when adding a new repository to the local directory. and we use git remote set-url origin git@github.com:User/UserRepo.git when changing the head to another repository. ReadMore: https://docs.github.com/en/get-started/getting-started-with-git/managing-remote-repositories
+
+Share
+Improve this answer
+Follow
+answered Apr 10 at 20:57
+simon gideon's user avatar
+simon gideon
+3911 bronze badge
+Add a comment
+Highly active question. Earn 10 reputation (not counting the association bonus) in order to answer this question. The reputation requirement helps protect this question from spam and non-answer activity.
+Not the answer you're looking for? Browse other questions tagged gitgithub or ask your own question.
+The Overflow Blog
+If you want to address tech debt, quantify it first
+Fighting comment spam at Facebook scale (Ep. 602)
+Featured on Meta
+Moderation strike: Results of negotiations
+Our Design Vision for Stack Overflow and the Stack Exchange network
+Call for volunteer reviewers for an updated search experience: OverflowAI Search
+Discussions experiment launching on NLP Collective
+Temporary policy: Generative AI (e.g., ChatGPT) is banned
+
+Report this ad
+Linked
+207
+What does the -u flag mean in git push -u origin master?
+4
+What is the difference between "git remote add origin", " set-url origin" and config...?
+1
+ssh: Could not resolve hostname github: nodename nor servname provided, or not known
+1
+Still recieving "Please use a personal access token instead." despite using personal access token
+-4
+How to add files to an existing Github repository using Git?
+1
+How to remove the Git repository in VS Code
+1
+Use local mirror if available, otherwise use the real one
+0
+(Git) How to push files that have had no changes made?
+Related
+3
+Using 'git remote add origin' creates a global remote instead of one local to current directory/repo
+1
+Why Remote for Github is named "origin" instead of "github"
+4
+git config: "remote.origin.push" vs "push.default"
+0
+What happens in Git when adding origin?
+0
+what is the purpose of git remote origin variable in .gitconfig file
+4
+What is the difference between "git remote add origin", " set-url origin" and config...?
+4
+Difference between git ls-remote and git ls-remote origin
+2
+What's the difference between `git fetch origin` and `git fetch git://127.0.0.1/`
+0
+Difference between git remote set-url and remote remove then add?
+2
+Difference between remotes/origin and origin
+Hot Network Questions
+Trying to figure out how to count this measure!
+How correct is Duolingo with 俺は人間をやめるぞ！
+Space movie seen on pogo tv with a man in a malfunctioning space pod
+Calculating new id with suffix for another id field that has duplicates in QGIS
+How can I reengage in a session when I've disengaged because of ADD?
+Selecting diode with Vf~300mV at 100uA forward current for reproducing a zero crossing published TI circuit
+9 trees in 7 rows with 3 trees in each row
+Grenade that makes you see all black (opposite of flashbangs)
+Mathematical motivation for supergeometry
+Geometric line: constructing fractions
+How does the lift force stop increasing itself after a certain point?
+Why is the visible light spectrum different to a hue wheel?
+How does ChatGPT render math in Markdown output?
+Can the U.S. do anything to block China's ability to block merger deals?
+What are the nuances around the different Japanese words for 'mountain' - specifically '丸'
+Why is 00 being deleted when assigning a base64 decoded string to a variable
+Can you control the PDF description that shows in browser tabs?
+Why is Spacetime described as flat even though we live in 3 dimensions of space?
+Why am I getting 2 frequency spikes in a mono tone signal?
+How to appease the Goddess of Traffic Lights
+Logical vs. bitwise operators. Both are wrong?
+Why are computability problems always written in full caps?
+What kind of cooking method was used for the chicken in my ramen?
+Are "I have no idea" and "I have no ideas" both correct, and if so, are they synonymous?
+ Question feed
+
+STACK OVERFLOW
+Questions
+Help
+PRODUCTS
+Teams
+Advertising
+Collectives
+Talent
+COMPANY
+About
+Press
+Work Here
+Legal
+Privacy Policy
+Terms of Service
+Contact Us
+Cookie Settings
+Cookie Policy
+STACK EXCHANGE NETWORK
+Technology
+Culture & recreation
+Life & arts
+Science
+Professional
+Business
+API
+Data
+Blog
+Facebook
+Twitter
+LinkedIn
+Instagram
+Site design / logo © 2023 Stack Exchange Inc; user contributions licensed under CC BY-SA. rev 2023.8.24.43599
+
+Your privacy
+
+By clicking “Accept all cookies”, you agree Stack Exchange can store cookies on your device and disclose information in accordance with our Cookie Policy.
